@@ -51,4 +51,4 @@ def detect_only_vid(video_path, dim = "2D"):
 
 if __name__ == "__main__":
     # execute only if run as a script
-    detect_only_vid("../parasite-trailer1-result.avi")
+    detect_only_vid("../source/parasite-trailer1-result.avi")
