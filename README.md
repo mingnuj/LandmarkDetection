@@ -2,7 +2,7 @@
 
 -----
 
-## How to use
+### How to use
 
 ```python
 # Detect with video and csv file
@@ -12,7 +12,7 @@ python main.py --vid_path <video_path> --csv_path <csv_path>
 python main.py --vid_path <video_path>
 ```
 
-## Requirements
+### Requirements
 
 - Ubuntu 18.04
 - CUDA (Used 10.2)
@@ -20,7 +20,7 @@ python main.py --vid_path <video_path>
 - pytorch (>= 1.0.0)
 - Other python libraries can find in requirements.txt
 
-## Referenced(https://github.com/1adrianb/face-alignment)
+### Referenced(https://github.com/1adrianb/face-alignment)
 
 ```
 @inproceedings{bulat2017far,
