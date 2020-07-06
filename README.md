@@ -14,7 +14,7 @@ python main.py --vid_path <video_path>
 
 ### Requirements
 
-- Ubuntu 18.04
+- Ubuntu 18.04 & Windows10
 - CUDA (Used 10.2)
 - Python 3.6
 - pytorch (>= 1.0.0)
