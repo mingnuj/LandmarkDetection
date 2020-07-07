@@ -4,9 +4,9 @@ from src.id_detect import csv_reader, detect_from_id
 from src.video_detect import detect_only_vid
 
 parser = argparse.ArgumentParser(description='Detection setting')
-parser.add_argument('--vid_path', dest="vid_path", type=str, default="../source/parasite-test-result.avi",
+parser.add_argument('--vid_path', dest="vid_path", type=str, default="../source/recording.avi",
                     help='source video path')
-parser.add_argument('--csv_path', dest="csv_path", type=str, default="../output/detection/parasite-test.csv",
+parser.add_argument('--csv_path', dest="csv_path", type=str, default="../output/detection/res.csv",
                     help='source csv path')
 parser.add_argument("--3D", dest="dim", action="store_const",
                     const="3D", default="2D", help='2D or 3D when FAN')

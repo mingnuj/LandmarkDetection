@@ -1,21 +1,38 @@
 import numpy as np
 import cv2
 import dlib
+import sys
 import face_alignment
 
 class FaceDetector(object):
-    def __init__(self, detector = None):
+    def __init__(self, detector = None, cascade_file = "../lbpcascade_animeface.xml"):
         super(FaceDetector, self).__init__()
         if detector is None:
             self.detector = dlib.get_frontal_face_detector()
             dlib.get_frontal_face_detector()
         else:
             self.detector = dlib.shape_predictor(detector)
+        self.cascade = cv2.CascadeClassifier(cascade_file)
 
     def detect_face(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # 3 means upsampled 2 times. It makes everything bigger, and allows to detect more
-        return self.detector(gray, 2)
+        return self.detector(gray, 0)
+
+    def detect_anim(self, image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.equalizeHist(gray)
+        detected = self.cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(24, 24))
+
+        faces = []
+
+        for face in detected:
+            left = face[0] - 50
+            top = face[1] - 50
+            right = face[0] + face[2] + 50
+            bottom = face[1] + face[3] + 50
+            faces.append(dlib.rectangle(left, top, right, bottom))
+        return faces
 
 class LandmarkExtractor(object):
     def __init__(self, landmark_model_file = None, dim = "2D"):
@@ -28,6 +45,7 @@ class LandmarkExtractor(object):
             self.FANET = True
             self.fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cuda')
         else:
+            print("with model file")
             self.FANET = False
             self.fa = dlib.shape_predictor(landmark_model_file)
 
@@ -56,7 +74,7 @@ class LandmarkExtractor(object):
     def draw_landmark(self, image, faces, landmarks = None):
         black_image = np.zeros(image.shape, np.uint8)
         for face in faces:
-            cv2.rectangle(image, (face.left(), face.top()), (face.right(), face.bottom()), color=(0, 255, 0))
+            cv2.rectangle(image, (face.left(), face.top()), (face.right(), face.bottom()), color=(0, 255, 255))
 
         # perform if there is a landmark
         if landmarks is not None:
@@ -88,3 +106,22 @@ class LandmarkExtractor(object):
         else:
             print("No landmark detected")
             return image
+
+image = cv2.imread("../mail.naver.com.png")
+image = cv2.resize(image, dsize = (0,0), fx=0.3, fy=0.3)
+print(image.shape)
+FD = FaceDetector()
+face_box = FD.detect_anim(image)
+
+print(image.shape)
+# FD = FaceDetector()
+# face_box = FD.detect_face(image)
+# left = 50
+# top = 50
+# right = 1200
+# bottom = 700
+# face_box = dlib.rectangle(left, top, right, bottom)
+LE = LandmarkExtractor("../shape_predictor_68_face_landmarks.dat")
+landmarks = LE.landmark_extractor(image, face_box)
+cv2.imshow("detect", LE.draw_landmark(image, face_box, landmarks))
+cv2.waitKey()
